@@ -188,137 +188,27 @@ conda install -c conda-forge proj geos
 
 For detailed cartopy installation, see [Cartopy documentation](https://scitools.org.uk/cartopy/docs/latest/install.html).
 
-### Memory Issues with Large Files
-
-**Problem:** Script crashes with memory errors when loading large zarr files
-
-**Solution:** The environment includes dask for lazy evaluation. Large files are automatically chunked. If still experiencing issues:
-
-1. Reduce computation scope (subset time periods or spatial domains)
-2. Check available system memory: `free -h` (Linux) or `vm_stat` (macOS)
-3. Use dask's distributed scheduler for larger systems
-
-### Path Issues on Different Systems
-
-**Problem:** Scripts fail with path errors when run on different machines
-
-**Solution:** Use environment variables to configure paths:
-
-```bash
-# Before running scripts
-export FIRCLIMATE_DATA_ROOT=/local/path/to/data
-export FIRCLIMATE_OUTPUT_ROOT=/local/path/to/output
-```
-
-This allows the same repository to work across systems without modification.
-
-## Running All Figures
-
-To generate all figures at once, create a simple batch script:
-
-```bash
-#!/bin/bash
-cd FIRclimate_figures
-conda activate firclimate
-
-for script in scripts/figure*.py; do
-    echo "Running $(basename $script)..."
-    python "$script"
-    if [ $? -ne 0 ]; then
-        echo "ERROR: $(basename $script) failed"
-        exit 1
-    fi
-done
-
-echo "All figures generated successfully!"
-```
-
-Save as `run_all_figures.sh`, make executable, and run:
-
-```bash
-chmod +x run_all_figures.sh
-./run_all_figures.sh
-```
-
-## Contributing
-
-To report issues, suggest improvements, or contribute enhancements:
-
-1. Open an issue on GitHub describing the problem or suggestion
-2. For bug reports, include:
-   - Error message and full traceback
-   - Python version and operating system
-   - Data path configuration
-   - Steps to reproduce
-
-3. For contributions, please ensure:
-   - Code follows existing style
-   - Changes are backwards compatible
-   - Path references use `data_config` module
-   - All scripts remain data-independent (paths configurable)
-
 ## License
 
-[Specify appropriate license - GPL, MIT, CC-BY, etc.]
+MIT
 
 ## Citation
 
-If you use these scripts or figures in your research, please cite:
+If you use these scripts or figures in your research, please cite this repository and the forthcoming manuscript.
 
 ### Recommended citation:
 ```
 Shaw, J. (2026). FIRclimate Figures - Reproducible Figure Generation. 
 GitHub: https://github.com/jshaw35/FIRclimate_figures
 
-Shaw, J. et al. (202X). [Manuscript title]. [Journal Name], XX(X), XX-XX.
-DOI: [Manuscript DOI]
-
-Shaw, J. (202X). FIRclimate Dataset: Processed PREFIRE and CESM data products. 
-Zenodo. DOI: [Data DOI]
-```
 
 ## Authors
 
 **Jonah Shaw**  
-University of Colorado Boulder / National Center for Atmospheric Research (NCAR)
+University of Colorado Boulder / Cooperative Institute for Research in Environmental Science (CIRES)
 
 ## References
 
 ### Scientific References
 - PREFIRE Mission: [PREFIRE Mission Overview](https://prefire.jpl.nasa.gov/)
 - CESM Model: Danabasoglu et al., 2020 (https://doi.org/10.1029/2019MS001916)
-- Spectral Analysis: [cite spectral radiative transfer references]
-
-### Related Documentation
-- [PREFIRE Data Archive](https://daac.ornl.gov/PREFIRE/)
-- [CESM Documentation](http://www.cesm.ucar.edu/)
-- [xarray Documentation](http://xarray.pydata.org/)
-- [Zarr Format](https://zarr-specs.readthedocs.io/)
-
-## Additional Notes
-
-### Performance Notes
-- First run may be slow as data is indexed/loaded
-- Subsequent runs benefit from caching
-- Large zarr files use dask for efficient memory handling
-- Cartopy projections are computed on first use and cached
-
-### System Requirements
-- **Minimum:** 8 GB RAM (for individual scripts)
-- **Recommended:** 16+ GB RAM (for parallel figure generation)
-- **Storage:** ~100 GB for complete data archive
-
-### Development Workflow
-When developing new figures or modifications:
-
-1. Use the configuration system for all paths
-2. Test with default paths first
-3. Test with custom paths via environment variables
-4. Avoid hardcoding filesystem paths
-5. Use `from data_config import DATA_ROOT, OUTPUT_ROOT` pattern
-
----
-
-**Last Updated:** August 22, 2026  
-**Repository:** https://github.com/jshaw35/FIRclimate_figures  
-**Questions?** Open an issue on GitHub
