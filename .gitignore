@@ -1,0 +1,51 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter/IPython
+.ipynb_checkpoints/
+*.ipynb
+
+# Conda
+conda-env/
+.conda-env
+
+# Project-specific
+output/
+*.png
+*.pdf
+*.jpg
+
+# Data symlinks (don't track, just reference)
+# data/ is a symlink and shouldn't be tracked
