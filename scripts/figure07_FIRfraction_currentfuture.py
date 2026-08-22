@@ -208,8 +208,15 @@ if __name__ == "__main__":
         region_fir_fraction_2070_2089 = region_data.sel(year=slice("2070", "2089")).mean(dim="year")
         percent_change = 100 * (region_fir_fraction_2070_2089 - region_fir_fraction_2015_2034) / region_fir_fraction_2015_2034
 
-        print(f"{region_label} Clear-sky FIR fraction went from {100*region_fir_fraction_2015_2034["LUC_TOA"].values:.1f} to {100*region_fir_fraction_2070_2089["LUC_TOA"].values:.1f} ({percent_change["LUC_TOA"]:.1f} % change)")
-        print(f"{region_label} All-sky FIR fraction went from {100*region_fir_fraction_2015_2034["LU_TOA"].values:.1f} to {100*region_fir_fraction_2070_2089["LU_TOA"].values:.1f} ({percent_change["LU_TOA"]:.1f} % change)")
+        luc_2015_2034 = 100*region_fir_fraction_2015_2034["LUC_TOA"].values
+        luc_2070_2089 = 100*region_fir_fraction_2070_2089["LUC_TOA"].values
+        luc_pct_change = percent_change["LUC_TOA"]
+        print(f"{region_label} Clear-sky FIR fraction went from {luc_2015_2034:.1f} to {luc_2070_2089:.1f} ({luc_pct_change:.1f} % change)")
+        
+        lu_2015_2034 = 100*region_fir_fraction_2015_2034["LU_TOA"].values
+        lu_2070_2089 = 100*region_fir_fraction_2070_2089["LU_TOA"].values
+        lu_pct_change = percent_change["LU_TOA"]
+        print(f"{region_label} All-sky FIR fraction went from {lu_2015_2034:.1f} to {lu_2070_2089:.1f} ({lu_pct_change:.1f} % change)")
     print()
 
     # %%

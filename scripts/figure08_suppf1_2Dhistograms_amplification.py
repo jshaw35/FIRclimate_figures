@@ -425,11 +425,11 @@ if __name__ == "__main__":
 
     # %%
     # Open TS and TMQ fields in order to compute the Arctic and Antarctic means
-    ts_loaddir = "/glade/campaign/univ/ucuc0007/COSP_RTTOV_output/20250616_103133.FHIST.f09_f09_mg17.cesm2.1.5_port_SSP585branch_PREFIRE/atm/proc/zarr/"
-    tmq_loaddir = "/glade/work/jonahshaw/PREFIRE_CESM_comparison/data/TMQ_output"
+    ts_loaddir = DATA_ROOT
+    tmq_loaddir = DATA_ROOT
 
-    ts_files = glob.glob(f"{ts_loaddir}/*TS*.zarr")
-    tmq_files = glob.glob(f"{tmq_loaddir}/*TMQ*.nc")
+    ts_files = glob.glob(str(ts_loaddir / "*TS*.zarr"))
+    tmq_files = glob.glob(str(tmq_loaddir / "*TMQ*.nc"))
     ts_files.sort()
     tmq_files.sort()
     early_timesel = slice("2015", "2034")
