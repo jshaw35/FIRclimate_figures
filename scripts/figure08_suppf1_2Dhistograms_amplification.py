@@ -3,15 +3,25 @@ Create plots showing 2D histograms conditioned on PWV and TS.
 
 """
 # %%
-from matplotlib.colors import BoundaryNorm, ListedColormap, TwoSlopeNorm
+from matplotlib.colors import BoundaryNorm
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 import glob
 from pathlib import Path
-import seaborn as sns
-from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
+import os
+import sys
+
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_config import DATA_ROOT, OUTPUT_ROOT
 
 # %%
 def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
@@ -22,9 +32,9 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
     if loc is None:
         loc = OUTPUT_ROOT
     output_dir = loc
-    full_path = '%s%s.%s' % (output_dir, filename, ext)
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
 
-    if not os.path.exists(output_dir + filename):
+    if not os.path.exists(full_path):
         file.savefig(
             full_path,
             format=ext,
@@ -375,7 +385,7 @@ def draw_line_with_endpoints_custom(ax, point1, point2, label=None, line_kwargs=
 # Load preprocessed data for 2D histograms.
 if __name__ == "__main__":
 
-    load_dir = DATA_ROOT / "PREFIRE_conditional_correlations"
+    load_dir = DATA_ROOT
     cesm_case = "20250616_103133.FHIST.f09_f09_mg17.cesm2.1.5_port_SSP585branch_PREFIRE"
     fig_save_dir = OUTPUT_ROOT
 
@@ -425,11 +435,9 @@ if __name__ == "__main__":
 
     # %%
     # Open TS and TMQ fields in order to compute the Arctic and Antarctic means
-    ts_loaddir = DATA_ROOT
-    tmq_loaddir = DATA_ROOT
-
-    ts_files = glob.glob(str(ts_loaddir / "*TS*.zarr"))
-    tmq_files = glob.glob(str(tmq_loaddir / "*TMQ*.nc"))
+    case = "20250616_103133.FHIST.f09_f09_mg17.cesm2.1.5_port_SSP585branch_PREFIRE"
+    ts_files = glob.glob(str(DATA_ROOT / f"{case}.h0.TS.?????????????.zarr"))
+    tmq_files = glob.glob(str(DATA_ROOT / f"{case}.h0.TMQ*.nc"))
     ts_files.sort()
     tmq_files.sort()
     early_timesel = slice("2015", "2034")

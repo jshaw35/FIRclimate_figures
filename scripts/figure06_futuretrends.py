@@ -11,9 +11,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns
-from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
+from pathlib import Path
+import sys
+
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_config import DATA_ROOT, OUTPUT_ROOT
 
 # %%
+
+def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
+    '''
+    Simple function for one-line saving.
+    Saves to OUTPUT_ROOT by default
+    '''
+    if loc is None:
+        loc = OUTPUT_ROOT
+    output_dir = loc
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
+
+    if not os.path.exists(full_path):
+        file.savefig(
+            full_path,
+            format=ext,
+            dpi=dpi,
+            **kwargs,
+        )
+
 
 def load_variable_multicase(data_dir, cases, variable_name):
     """Load a variable across multiple cases and time periods"""
@@ -300,7 +330,7 @@ def create_figure_panels(fig, gs, panel_data, lats, fontsize=12):
 
 if __name__ == "__main__":
 
-    data_dir = DATA_ROOT / "CESM2"
+    data_dir = DATA_ROOT
     output_dir = OUTPUT_ROOT
 
     os.makedirs(output_dir, exist_ok=True)
@@ -513,7 +543,14 @@ if __name__ == "__main__":
     # %%
     # Save
     output_file_png = os.path.join(output_dir, 'fig4_CESMtrends.png')
-    fig.savefig(output_file_png, dpi=300, bbox_inches='tight')
+    to_png(
+        fig,
+        'fig4_CESMtrends',
+        loc=output_dir,
+        dpi=300,
+        bbox_inches='tight',
+        ext='png',
+    )
     print(f"\n✓ Figure saved as: {output_file_png}")
 
     plt.close()

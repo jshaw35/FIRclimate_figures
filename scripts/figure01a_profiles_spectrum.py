@@ -10,6 +10,16 @@ import matplotlib.pyplot as plt
 from scipy import constants
 import matplotlib.gridspec as gridspec
 from pathlib import Path
+import os
+import sys
+
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from data_config import DATA_ROOT, OUTPUT_ROOT
 
@@ -49,6 +59,25 @@ def rad_calc(ds):
     return(new_wl,rad_wl_resamp)
 
 
+def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
+    '''
+    Simple function for one-line saving.
+    Saves to OUTPUT_ROOT by default
+    '''
+    if loc is None:
+        loc = OUTPUT_ROOT
+    output_dir = loc
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
+
+    if not os.path.exists(full_path):
+        file.savefig(
+            full_path,
+            format=ext,
+            dpi=dpi,
+            **kwargs,
+        )
+
+
 # %%
 
 
@@ -60,6 +89,7 @@ if __name__ == "__main__":
 
     SRF_f = netCDF4.Dataset(SRFfile1, 'r')
 
+    print("Spectral response function wavelengths:")
     print(SRF_f['channel_mean_wavelen'][5,0])
     print(SRF_f['channel_mean_wavelen'][12,0])
     print(SRF_f['channel_mean_wavelen'][27,0])
@@ -96,7 +126,6 @@ if __name__ == "__main__":
     q = nc['h2o'][:,a] * 0.622 * 1e-6 #* 1e3
 
     t_polar = tlev[-1]*0.996
-    print(t_tropical-273.15,t_polar-273.15)
 
     new_wl = np.arange(4,50.03,0.03)
     tropical_planck = planck_function(new_wl, t_tropical)
@@ -190,7 +219,7 @@ if __name__ == "__main__":
     axes.append(fig.add_subplot(gs[1]))
 
     # 51 mm TPW, 23 C
-    wl_list,rad_wl = rad_calc(xr.open_dataset(f'{load_dir}PCRTM_forward_stdatm1_tropic.nc'))
+    wl_list,rad_wl = rad_calc(xr.open_dataset(f'{load_dir}/PCRTM_forward_stdatm1_tropic.nc'))
 
     # In terms of wl (Wm^-2 sr^-1 µm^-1)
     axes[-1].fill_between(new_wl, rad_wl, tropical_planck,facecolor='lightgray',zorder=2)
@@ -222,6 +251,6 @@ if __name__ == "__main__":
     plt.ylabel('Radiance (Wm$^{-2}$ sr$^{-1}$ μm$^{-1}$)',size=12)
 
     # %%
-    fig.savefig(str(save_dir / 'fig1_upperpanels.png'),dpi=300,bbox_inches="tight")
+    to_png(fig, 'fig1_upperpanels', loc=save_dir, dpi=300, bbox_inches="tight", ext='png')
 
 # %%

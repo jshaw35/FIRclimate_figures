@@ -9,8 +9,19 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
-from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
+import sys
 
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_config import DATA_ROOT, OUTPUT_ROOT
+
+# %%
 def label_PREFIRE(
     ds,
 ):
@@ -30,9 +41,9 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
     if loc is None:
         loc = OUTPUT_ROOT
     output_dir = loc
-    full_path = '%s%s.%s' % (output_dir, filename, ext)
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
 
-    if not os.path.exists(output_dir + filename):
+    if not os.path.exists(full_path):
         file.savefig(
             full_path,
             format=ext,
@@ -45,7 +56,7 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
 if __name__ == "__main__":
     # Load PREFIRE observations
     load_dir = DATA_ROOT
-    prefire_filepath = load_dir / "PREFIRE" / "PREFIRE_zonal_stats.zarr"
+    prefire_filepath = load_dir / "PREFIRE_zonal_stats.zarr"
     prefire_ds = xr.open_zarr(str(prefire_filepath))
     cesm_rttov_vars = [
         "rttov_rad_clear_inst001",
@@ -59,7 +70,7 @@ if __name__ == "__main__":
     for _var in cesm_rttov_vars:
         cesm_files = []
         for case in cesm_cases:
-            cesm_files += glob.glob(str(load_dir / "CESM2" / f"{case}*{_var}*.zarr"))
+            cesm_files += glob.glob(str(load_dir / f"{case}*{_var}*.zarr"))
         file_dict[_var] = cesm_files
     cesm_total_ds = xr.open_mfdataset(file_dict["rttov_rad_total_inst001"], combine="nested")
     cesm_clear_ds = xr.open_mfdataset(file_dict["rttov_rad_clear_inst001"], combine="nested")
@@ -128,7 +139,6 @@ if __name__ == "__main__":
 
     #%%
     # Figure 1, seasonal cycle and zonal mean values
-    # Clear-sky values here on CURC: /pl/active/kaygroup/PREFIRE/PREFIRE_SAT2_1B-RAD_R01_Gridded_and_Masked/
     year_slice = slice(2015, 2035) # bracket the CESM year with 10 years on either side
     colors = sns.color_palette("colorblind")
     fontsize = 12
@@ -305,7 +315,6 @@ if __name__ == "__main__":
         ax.set_ylabel("BT Std. Dev. (K)", fontsize=fontsize+2)
         ax.set_xlabel("Latitude", fontsize=fontsize)
         ax.set_ylim(ylims)
-        # Create a filler plot for the legend
 
     letters = list("abcdefghijkl")
     # repeat each wavelength twice so labels map to axes in order: [w1, w1, w2, w2, w3, w3]

@@ -10,7 +10,18 @@ import xarray as xr
 import glob
 from pathlib import Path
 import seaborn as sns
-from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
+import os
+import sys
+
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_config import DATA_ROOT, OUTPUT_ROOT
 
 # %%
 def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
@@ -21,9 +32,9 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
     if loc is None:
         loc = OUTPUT_ROOT
     output_dir = loc
-    full_path = '%s%s.%s' % (output_dir, filename, ext)
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
 
-    if not os.path.exists(output_dir + filename):
+    if not os.path.exists(full_path):
         file.savefig(
             full_path,
             format=ext,
@@ -340,7 +351,7 @@ def plot_2d_histogram_with_contours(
 # %%
 # Load preprocessed data for 2D histograms.
 if __name__ == "__main__":
-    load_dir = DATA_ROOT / "PREFIRE_conditional_correlations/"
+    load_dir = DATA_ROOT
     cesm_case = "20251121_081336.FHIST.f09_f09_mg17.PREFIREPRIME"
     fig_save_dir = OUTPUT_ROOT
 
@@ -362,7 +373,7 @@ if __name__ == "__main__":
     counts_2d_ds["bin_center_TS"] = counts_2d_ds["bin_center_TS"] - 1
 
     # Load binned 2D histogram data for specified variables, if files exist
-    load_vars = ["rttov_rad_total_inst001", "rttov_rad_clear_inst001", "LU_TOA", "LUC_TOA", "CLTMODIS"]
+    load_vars = ["rttov_rad_total_inst001", "rttov_rad_clear_inst001"]
     data_dict = {}
     for var in load_vars:
         file = glob.glob(str(Path(load_dir) / f"{cesm_case}*.{var}.*binned2D.zarr"))
@@ -384,7 +395,6 @@ if __name__ == "__main__":
     # Add the cloud radiative effect (CRE) variables by taking the difference between total and clear-sky brightness temperatures.
     data_dict["rttov_rad_CRE_inst001"] = data_dict["rttov_rad_clear_inst001"] - data_dict["rttov_rad_total_inst001"]
     data_dict["rttov_bt_CRE_inst001"] = data_dict["rttov_bt_clear_inst001"] - data_dict["rttov_bt_total_inst001"]
-    data_dict["LU_CRE"] = data_dict["LUC_TOA"] - data_dict["LU_TOA"]
 
     # %%
     # Reconstruct the bin centers and bounds for CWV and TS.

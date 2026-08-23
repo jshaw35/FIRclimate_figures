@@ -6,6 +6,18 @@ import xarray as xr
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
+import sys
+from pathlib import Path
+
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
 
 # %%
@@ -17,15 +29,17 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
     if loc is None:
         loc = OUTPUT_ROOT
     output_dir = loc
-    full_path = '%s%s.%s' % (output_dir, filename, ext)
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
 
-    if not os.path.exists(output_dir + filename):
+    if not os.path.exists(full_path):
         file.savefig(
             full_path,
             format=ext,
             dpi=dpi,
             **kwargs,
         )
+
+
 # %%
 
 if __name__ == "__main__":
@@ -161,16 +175,14 @@ if __name__ == "__main__":
 
     # %%
     fig_save_dir = OUTPUT_ROOT
-    save_figs = False
-    if save_figs:
-        to_png(
-            fig,
-            "fig5_FIRfraction_2015start",
-            loc=fig_save_dir,
-            dpi=200,
-            ext="png",
-            bbox_inches="tight",
-        )
+    to_png(
+        fig,
+        "fig5_FIRfraction_2015start",
+        loc=fig_save_dir,
+        dpi=200,
+        ext="png",
+        bbox_inches="tight",
+    )
     # %%
     fir_fraction_global = century_firfrac_ds.weighted(np.cos(np.deg2rad(century_firfrac_ds["lat"]))).mean(dim="lat")
     fir_fraction_global_annual = fir_fraction_global.groupby("time.year").mean(dim="time")
@@ -186,18 +198,6 @@ if __name__ == "__main__":
     midlat_mask = (np.abs(century_firfrac_ds["lat"]) < 60) & (np.abs(century_firfrac_ds["lat"]) > 30)
     fir_fraction_midlat = century_firfrac_ds.sel(lat=midlat_mask).weighted(np.cos(np.deg2rad(century_firfrac_ds["lat"]))).mean(dim="lat")
     fir_fraction_midlat_annual = fir_fraction_midlat.groupby("time.year").mean(dim="time")
-
-    # fir_fraction_2000_2009 = fir_fraction_global_annual.sel(year=slice("2000", "2009")).mean(dim="year")
-    # fir_fraction_2080_2089 = fir_fraction_global_annual.sel(year=slice("2080", "2089")).mean(dim="year")
-
-    # print("FIR fraction 2000-2009: ", fir_fraction_2000_2009)
-    # print("FIR fraction 2080-2089: ", fir_fraction_2080_2089)
-
-    # fir_fraction_2015_2034 = fir_fraction_global_annual.sel(year=slice("2015", "2034")).mean(dim="year")
-    # fir_fraction_2070_2089 = fir_fraction_global_annual.sel(year=slice("2070", "2089")).mean(dim="year")
-
-    # print("FIR fraction 2015-2034: ", fir_fraction_2015_2034)
-    # print("FIR fraction 2070-2089: ", fir_fraction_2070_2089)
 
     # %%
     for region_label, region_data in zip(
@@ -220,37 +220,3 @@ if __name__ == "__main__":
     print()
 
     # %%
-    fig, ax = plt.subplots(1, 1, figsize=(8,5))
-    ax.plot(
-        fir_fraction_global.time,
-        fir_fraction_global["LU_TOA"],
-        label="All-sky",
-        linestyle="dashed",
-        alpha=0.5,
-    )
-    ax.plot(
-        # fir_fraction_global_annual.year,
-        fir_fraction_global["time"][::12],
-        fir_fraction_global_annual["LU_TOA"],
-        # label="All-sky",
-        linestyle="solid",
-        # alpha=0.5,
-    )
-
-    ax.plot(
-        fir_fraction_global.time,
-        fir_fraction_global["LUC_TOA"],
-        label="Clear-sky",
-        linestyle="dashed",
-        alpha=0.5,
-    )
-    ax.plot(
-        # fir_fraction_global_annual.year,
-        fir_fraction_global["time"][::12],
-        fir_fraction_global_annual["LUC_TOA"],
-        # label="All-sky",
-        linestyle="solid",
-        # alpha=0.5,
-    )
-    plt.legend()
-# %%

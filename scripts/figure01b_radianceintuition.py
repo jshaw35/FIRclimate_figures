@@ -9,8 +9,17 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
+import sys
 
-from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_config import DATA_ROOT, OUTPUT_ROOT
 
 # %%
 def label_PREFIRE(
@@ -32,16 +41,15 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
     if loc is None:
         loc = OUTPUT_ROOT
     output_dir = loc
-    full_path = '%s%s.%s' % (output_dir, filename, ext)
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
 
-    if not os.path.exists(str(output_dir / filename)):
+    if not os.path.exists(full_path):
         file.savefig(
             full_path,
             format=ext,
             dpi=dpi,
             **kwargs,
         )
-
 
 
 def transform_cwv_axis(cwv_values, threshold=5, low_scale=2.0, high_scale=0.4):

@@ -9,7 +9,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 import glob
-from data_config import DATA_ROOT, OUTPUT_ROOT, get_data_file
+from pathlib import Path
+import os
+import sys
+
+# Ensure project-root modules are importable when this file is run directly.
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    PROJECT_ROOT = Path.cwd().resolve()  # or hardcode/adjust as needed
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_config import DATA_ROOT, OUTPUT_ROOT
 
 # %%
 def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
@@ -20,9 +32,10 @@ def to_png(file, filename, loc=None, dpi=200, ext='png', **kwargs):
     if loc is None:
         loc = OUTPUT_ROOT
     output_dir = loc
-    full_path = '%s%s.%s' % (output_dir, filename, ext)
+    full_path = '%s/%s.%s' % (output_dir, filename, ext)
+    print(f"Saving figure to {full_path}")
 
-    if not os.path.exists(output_dir + filename):
+    if not os.path.exists(full_path):
         file.savefig(
             full_path,
             format=ext,
@@ -267,7 +280,6 @@ def plot_2d_histogram_with_contours(
 # Load preprocessed data for 2D histograms.
 if __name__ == "__main__":
     obs_load_dir = DATA_ROOT
-    cesm_load_dir = DATA_ROOT / "PREFIRE_conditional_correlations"
     cesm_case = "20251121_081336.FHIST.f09_f09_mg17.PREFIREPRIME"
     fig_save_dir = OUTPUT_ROOT
 
@@ -275,7 +287,7 @@ if __name__ == "__main__":
     obs_counts_ds = obs_ds["FIR_count"].sum("time")
 
     # Load histogram counts for pdf
-    cesm_counts_file = glob.glob(f"{cesm_load_dir}{cesm_case}*.TMQ.TS.bincounts.zarr")
+    cesm_counts_file = glob.glob(f"{obs_load_dir}/{cesm_case}*.TMQ.TS.bincounts.zarr")
     assert len(cesm_counts_file) == 1, f"Expected exactly one counts file, found {len(cesm_counts_file)}"
     cesm_counts_file = cesm_counts_file[0]
     cesm_counts_ds = xr.open_zarr(cesm_counts_file)["global_counts"].compute()
