@@ -566,7 +566,7 @@ if __name__ == "__main__":
     # %%
     to_png(
         fig,
-        "fig_2D_histograms_PREFIRE_CESM",
+        "fig02_2D_histograms_PREFIRE_CESM",
         loc=fig_save_dir,
         dpi=200,
         ext="png",

@@ -412,7 +412,7 @@ if __name__ == "__main__":
     # %%
     to_png(
         fig,
-        "fig_2Dhistograms_countscomparison",
+        "fig_supp_2Dhistograms_countscomparison",
         loc=fig_save_dir,
         dpi=200,
         ext="png",

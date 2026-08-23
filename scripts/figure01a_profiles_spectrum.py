@@ -251,6 +251,6 @@ if __name__ == "__main__":
     plt.ylabel('Radiance (Wm$^{-2}$ sr$^{-1}$ μm$^{-1}$)',size=12)
 
     # %%
-    to_png(fig, 'fig1_upperpanels', loc=save_dir, dpi=300, bbox_inches="tight", ext='png')
+    to_png(fig, 'fig01_upperpanels', loc=save_dir, dpi=300, bbox_inches="tight", ext='png')
 
 # %%

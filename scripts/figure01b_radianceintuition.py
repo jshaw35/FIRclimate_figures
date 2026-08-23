@@ -288,7 +288,7 @@ if __name__ == "__main__":
     fig_save_dir = OUTPUT_ROOT
     to_png(
         fig,
-        "fig1_lowerpanels_BTalt2",
+        "fig01_lowerpanels",
         loc=fig_save_dir,
         dpi=200,
         ext="png",
@@ -440,7 +440,7 @@ if __name__ == "__main__":
     fig_save_dir = OUTPUT_ROOT
     to_png(
         fig,
-        "fig1_lowerpanels_BTalt",
+        "fig01_lowerpanels_alt",
         loc=fig_save_dir,
         dpi=200,
         ext="png",

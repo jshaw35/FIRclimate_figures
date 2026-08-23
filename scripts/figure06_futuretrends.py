@@ -545,7 +545,7 @@ if __name__ == "__main__":
     output_file_png = os.path.join(output_dir, 'fig4_CESMtrends.png')
     to_png(
         fig,
-        'fig4_CESMtrends',
+        'fig06_CESMtrends',
         loc=output_dir,
         dpi=300,
         bbox_inches='tight',

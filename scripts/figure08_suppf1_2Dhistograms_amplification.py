@@ -716,7 +716,7 @@ if __name__ == "__main__":
     # %%
     to_png(
         fig,
-        "fig_2D_histograms_AAexplanation",
+        "fig08_2D_histograms_AAexplanation",
         loc=fig_save_dir,
         dpi=200,
         ext="png",
@@ -917,7 +917,7 @@ if __name__ == "__main__":
 
     to_png(
         fig,
-        "fig_2D_histograms_AAexplanation_BT",
+        "fig_supp_2D_histograms_AAexplanation_BT",
         loc=fig_save_dir,
         dpi=200,
         ext="png",

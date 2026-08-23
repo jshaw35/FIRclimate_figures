@@ -298,7 +298,7 @@ if __name__ == "__main__":
     fig_save_dir = OUTPUT_ROOT
     to_png(
         fig,
-        "fig3_cloudintuition",
+        "fig03_cloudintuition",
         loc=fig_save_dir,
         dpi=200,
         ext="png",

@@ -178,7 +178,7 @@ if __name__ == "__main__":
     fig_save_dir = OUTPUT_ROOT
     to_png(
         fig_ch6,
-        "fig_supp_ch6_clearskyvalidation",
+        "fig_supp_MWVch6_clearskyvalidation",
         loc=fig_save_dir,
         dpi=200,
         ext="png",
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     )
     to_png(
         fig_ch13,
-        "fig_supp_ch13_clearskyvalidation",
+        "fig_supp_AWch13_clearskyvalidation",
         loc=fig_save_dir,
         dpi=200,
         ext="png",
@@ -194,7 +194,7 @@ if __name__ == "__main__":
     )
     to_png(
         fig_ch28,
-        "fig_supp_ch28_clearskyvalidation",
+        "fig_supp_FIRch28_clearskyvalidation",
         loc=fig_save_dir,
         dpi=200,
         ext="png",
