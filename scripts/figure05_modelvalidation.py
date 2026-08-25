@@ -70,7 +70,7 @@ if __name__ == "__main__":
     for _var in cesm_rttov_vars:
         cesm_files = []
         for case in cesm_cases:
-            cesm_files += glob.glob(str(load_dir / f"{case}*{_var}*.zarr"))
+            cesm_files += glob.glob(str(load_dir / f"{case}*{_var}*_zonalfields.zarr"))
         file_dict[_var] = cesm_files
     cesm_total_ds = xr.open_mfdataset(file_dict["rttov_rad_total_inst001"], combine="nested")
     cesm_clear_ds = xr.open_mfdataset(file_dict["rttov_rad_clear_inst001"], combine="nested")
